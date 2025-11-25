@@ -27,5 +27,13 @@ public class CustomExceptionHandler {
         apiErreur.setStatus(422);
         return new ResponseEntity<>(apiErreur, HttpStatus.UNPROCESSABLE_CONTENT);
     }
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<ApiErreur> IncorrectPassword(IncorrectPasswordException e) {
+        ApiErreur apiErreur = new ApiErreur();
+        apiErreur.setMessage(e.getMessage());
+        apiErreur.setLocalDateTime(LocalDateTime.now());
+        apiErreur.setStatus(401);
+        return new ResponseEntity<>(apiErreur, HttpStatus.UNAUTHORIZED);
+    }
 
 }

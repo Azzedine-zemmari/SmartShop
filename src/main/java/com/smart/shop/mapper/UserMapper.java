@@ -12,4 +12,5 @@ public interface UserMapper {
     @Mapping(target="id" , ignore=true)
     User UserRegisterDtoToUser(UserRegisterDto userRegisterDto);
     UserDto userToUserDto(User user);
+
 }
