@@ -2,6 +2,7 @@ package com.smart.shop.service.user;
 
 import com.smart.shop.dto.UserDto;
 import com.smart.shop.dto.UserRegisterDto;
+import com.smart.shop.exeception.UserAlreadyExiste;
 import com.smart.shop.mapper.UserMapper;
 import com.smart.shop.model.User;
 import com.smart.shop.repository.UserRepository;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserServiceInterface{
         User user = userMapper.UserRegisterDtoToUser(userRegisterDto);
         Optional<User> userisExists = userRepository.findByUsername(user.getUsername());
         if(userisExists.isPresent()){
-            throw new RuntimeException("Utilisateur est deja exists");
+            throw new UserAlreadyExiste("Utilisateur est deja exists");
         }
         String hashPassword = PasswordUtils.hashPassword(userRegisterDto.getPassword());
         user.setPassword(hashPassword);
