@@ -8,4 +8,5 @@ import jakarta.servlet.http.HttpSession;
 public interface UserServiceInterface {
     UserDto register(UserRegisterDto user);
     UserDto login(UserLoginDto user, HttpSession session);
+    void logout(HttpSession session);
 }

@@ -25,4 +25,9 @@ public class UserController {
         UserDto userDto = userServiceInterface.login(userLoginDto,session);
         return ResponseEntity.ok(userDto);
     }
+    @PostMapping("/logout")
+    public String logout(HttpSession session){
+        userServiceInterface.logout(session);
+        return "Deconnection avec success !";
+    }
 }

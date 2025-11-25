@@ -50,4 +50,8 @@ public class UserServiceImpl implements UserServiceInterface{
         return userMapper.userToUserDto(user);
 
     }
+    @Override
+    public void logout(HttpSession session){
+        session.invalidate();
+    }
 }
