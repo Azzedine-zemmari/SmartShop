@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserServiceInterface{
     @Override
     public UserDto register(UserRegisterDto userRegisterDto){
         User user = userMapper.UserRegisterDtoToUser(userRegisterDto);
-        Optional<User> userisExists = userRepository.findByUsername(user.getUsername());
+        Optional<User> userisExists = userRepository.findByUsername(userRegisterDto.getUsername());
         if(userisExists.isPresent()){
             throw new UserAlreadyExiste("Utilisateur est deja exists");
         }
