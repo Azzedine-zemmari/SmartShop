@@ -44,8 +44,7 @@ public class UserServiceImpl implements UserServiceInterface{
         if(!isValid){
             throw new IncorrectPasswordException("mot de pass incorrect");
         }
-        session.setAttribute("USER_ID",user.getId());
-        session.setAttribute("USER_ROLE",user.getRole());
+        session.setAttribute("USER",user);
 
         return userMapper.userToUserDto(user);
 
