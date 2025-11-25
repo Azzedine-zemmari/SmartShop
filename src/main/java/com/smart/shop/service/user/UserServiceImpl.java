@@ -3,11 +3,14 @@ package com.smart.shop.service.user;
 import com.smart.shop.dto.UserDto;
 import com.smart.shop.dto.UserLoginDto;
 import com.smart.shop.dto.UserRegisterDto;
+import com.smart.shop.enums.Role;
 import com.smart.shop.exeception.IncorrectPasswordException;
 import com.smart.shop.exeception.UserAlreadyExiste;
 import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.UserMapper;
+import com.smart.shop.model.Client;
 import com.smart.shop.model.User;
+import com.smart.shop.repository.ClientRepository;
 import com.smart.shop.repository.UserRepository;
 import com.smart.shop.utils.PasswordUtils;
 import jakarta.servlet.http.HttpSession;
@@ -17,24 +20,38 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserServiceInterface{
+    private final ClientRepository clientRepository;
     private UserRepository userRepository;
     private UserMapper userMapper;
-    public UserServiceImpl(UserRepository userRepository , UserMapper userMapper){
+    public UserServiceImpl(UserRepository userRepository , UserMapper userMapper, ClientRepository clientRepository){
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public UserDto register(UserRegisterDto userRegisterDto){
-        User user = userMapper.UserRegisterDtoToUser(userRegisterDto);
         Optional<User> userisExists = userRepository.findByUsername(userRegisterDto.getUsername());
         if(userisExists.isPresent()){
             throw new UserAlreadyExiste("Utilisateur est deja exists");
         }
+        User user = new User();
+        user.setUsername(userRegisterDto.getUsername());
         String hashPassword = PasswordUtils.hashPassword(userRegisterDto.getPassword());
         user.setPassword(hashPassword);
-        userRepository.save(user);
-        return userMapper.userToUserDto(user);
+        user.setRole(userRegisterDto.getRole());
+
+        User savedUser = userRepository.save(user);
+        
+        if(userRegisterDto.getRole() == Role.USER){
+            Client client = new Client();
+            client.setNom(userRegisterDto.getNom());
+            client.setUser(savedUser);
+
+            clientRepository.save(client);
+        }
+        
+        return userMapper.userToUserDto(savedUser);
 
     }
     @Override

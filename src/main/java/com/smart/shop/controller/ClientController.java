@@ -14,9 +14,9 @@ public class ClientController {
     public ClientController(ClientServiceInterface clientServiceInterface){
         this.clientService = clientServiceInterface;
     }
-    @PostMapping("/insert/{id}")
-    public ResponseEntity<ClientDto> insert(@PathVariable("id") int userId, @RequestBody Client client){
-        ClientDto newClient = clientService.creeUser(userId,client);
-        return ResponseEntity.ok(newClient);
-    }
+//    @PostMapping("/insert/{id}")
+//    public ResponseEntity<ClientDto> insert(@PathVariable("id") int userId, @RequestBody Client client){
+//        ClientDto newClient = clientService.creeUser(userId,client);
+//        return ResponseEntity.ok(newClient);
+//    }
 }

@@ -23,21 +23,21 @@ public class ClientServiceImpl implements ClientServiceInterface{
         this.clientMapper = clientMapper;
     }
 
-    @Override
-    public ClientDto creeUser(int userId,Client client){
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(!userOptional.isPresent()){
-            throw new UserNotFound("utilisateur avec cette id n'est pas existe");
-        }
-        User user = userOptional.get();
-        Client newClient = new Client();
-        newClient.setId(user.getId());
-        newClient.setNom(client.getNom());
-        newClient.setPassword(user.getPassword());
-        newClient.setUsername(user.getUsername());
-        newClient.setRole(user.getRole());
-
-        clientRepository.save(newClient);
-        return clientMapper.ClientToClientDto(newClient);
-    }
+//    @Override
+//    public ClientDto creeUser(int userId,Client client){
+//        Optional<User> userOptional = userRepository.findById(userId);
+//        if(!userOptional.isPresent()){
+//            throw new UserNotFound("utilisateur avec cette id n'est pas existe");
+//        }
+//        User user = userOptional.get();
+//        Client newClient = new Client();
+//        newClient.setId(user.getId());
+//        newClient.setNom(client.getNom());
+//        newClient.setPassword(user.getPassword());
+//        newClient.setUsername(user.getUsername());
+//        newClient.setRole(user.getRole());
+//
+//        clientRepository.save(newClient);
+//        return clientMapper.ClientToClientDto(newClient);
+//    }
 }

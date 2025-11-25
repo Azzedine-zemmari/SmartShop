@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     protected Role role;
 
-    public User(int id, String username, String password, Role role) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
+    @OneToOne(mappedBy = "user")
+    private Client client;
 }
