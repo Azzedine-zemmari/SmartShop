@@ -36,4 +36,8 @@ public class Commande {
     // todo add code promo model
 
     private Double montant_restant;
+
+
+    @OneToMany(mappedBy = "commande",cascade = CascadeType.ALL)
+    private List<Payment> paiements;
 }
