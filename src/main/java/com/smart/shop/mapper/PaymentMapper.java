@@ -19,7 +19,6 @@ public class PaymentMapper {
         payment.setDatePaiement(dto.getDatePaiement());
         payment.setDateEncaissement(dto.getDateEncaissement());
         payment.setTypePaiement(dto.getTypePaiement());
-        payment.setNumeroPaiement(dto.getNumeroPaiement());
         if(dto.getCommandeId() != null){
             Commande commande = commandeRepository.findById(dto.getCommandeId())
                     .orElseThrow(() -> new RuntimeException("Commande n 'est pas trouver avec cet id " + dto.getCommandeId()));
