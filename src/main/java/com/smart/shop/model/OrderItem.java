@@ -22,6 +22,8 @@ public class OrderItem {
 
     private double price; // price per unit at the time of order
 
+    private double total_ligne;
+
     public double getTotal() {
         return price * quantity;
     }

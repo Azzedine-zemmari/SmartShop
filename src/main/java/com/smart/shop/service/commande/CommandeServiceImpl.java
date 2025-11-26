@@ -64,13 +64,15 @@ public class CommandeServiceImpl implements CommandeService{
             orderItem.setCommande(commande);
             orderItem.setPrice(product.getPrix_unitaire());
             orderItem.setQuantity(itemDto.getQuantity());
-
+            orderItem.setTotal_ligne(orderItem.getTotal());
             sous_total += orderItem.getTotal();
         }
 
         // set total
         commande.setSous_total(sous_total);
-        commande.setTotal(sous_total - dto.getDiscount() + dto.getTva());
+        double total = sous_total - dto.getDiscount() + dto.getTva() ;
+        commande.setTotal(total);
+        commande.setMontant_restant(total);
 
         // save
 

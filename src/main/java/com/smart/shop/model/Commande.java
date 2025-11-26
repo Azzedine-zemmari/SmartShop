@@ -1,5 +1,6 @@
 package com.smart.shop.model;
 
+import com.smart.shop.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,4 +30,10 @@ public class Commande {
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    private OrderStatus status;
+
+    // todo add code promo model
+
+    private Double montant_restant;
 }
