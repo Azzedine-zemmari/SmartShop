@@ -28,32 +28,6 @@ public class UserServiceImpl implements UserServiceInterface{
         this.userMapper = userMapper;
         this.clientRepository = clientRepository;
     }
-
-    @Override
-    public UserDto register(UserRegisterDto userRegisterDto){
-        Optional<User> userisExists = userRepository.findByUsername(userRegisterDto.getUsername());
-        if(userisExists.isPresent()){
-            throw new UserAlreadyExiste("Utilisateur est deja exists");
-        }
-        User user = new User();
-        user.setUsername(userRegisterDto.getUsername());
-        String hashPassword = PasswordUtils.hashPassword(userRegisterDto.getPassword());
-        user.setPassword(hashPassword);
-        user.setRole(userRegisterDto.getRole());
-
-        User savedUser = userRepository.save(user);
-        
-        if(userRegisterDto.getRole() == Role.USER){
-            Client client = new Client();
-            client.setNom(userRegisterDto.getNom());
-            client.setUser(savedUser);
-
-            clientRepository.save(client);
-        }
-        
-        return userMapper.userToUserDto(savedUser);
-
-    }
     @Override
     public UserDto login(UserLoginDto userLoginDto , HttpSession session){
         User user = userRepository.findByUsername(userLoginDto.getUsername()).orElseThrow(()-> new UserNotFound("utilisateur n'est pas exsiste"));

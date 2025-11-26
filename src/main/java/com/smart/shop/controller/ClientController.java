@@ -1,5 +1,6 @@
 package com.smart.shop.controller;
 
+import com.smart.shop.dto.UserRegisterDto;
 import com.smart.shop.dto.client.ClientDto;
 import com.smart.shop.model.Client;
 import com.smart.shop.service.client.ClientServiceInterface;
@@ -14,9 +15,9 @@ public class ClientController {
     public ClientController(ClientServiceInterface clientServiceInterface){
         this.clientService = clientServiceInterface;
     }
-//    @PostMapping("/insert/{id}")
-//    public ResponseEntity<ClientDto> insert(@PathVariable("id") int userId, @RequestBody Client client){
-//        ClientDto newClient = clientService.creeUser(userId,client);
-//        return ResponseEntity.ok(newClient);
-//    }
+    @PostMapping("/creeClient")
+    public ResponseEntity<ClientDto> insert(@RequestBody UserRegisterDto userRegisterDto){
+        ClientDto newClient = clientService.creeClient(userRegisterDto);
+        return ResponseEntity.ok(newClient);
+    }
 }

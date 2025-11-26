@@ -15,11 +15,6 @@ public class UserController {
     public UserController(UserServiceInterface userServiceInterface){
         this.userServiceInterface = userServiceInterface;
     }
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserRegisterDto userRegisterDto){
-        UserDto userDto = userServiceInterface.register(userRegisterDto);
-        return ResponseEntity.ok(userDto);
-    }
     @PostMapping("/login")
     public ResponseEntity<UserDto> loginUser(@RequestBody UserLoginDto userLoginDto , HttpSession session){
         UserDto userDto = userServiceInterface.login(userLoginDto,session);

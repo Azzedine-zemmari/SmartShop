@@ -1,5 +1,6 @@
 package com.smart.shop.repository;
 
+import com.smart.shop.enums.Role;
 import com.smart.shop.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

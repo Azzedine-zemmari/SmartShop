@@ -25,14 +25,14 @@ public class RoleFilter implements Filter {
             return;
         }
 
-        if(session == null || session.getAttribute("user") == null){
+        if(session == null || session.getAttribute("USER") == null){
             response.setContentType("application/json");
             response.getWriter().write("error : non authentifie");
             ((HttpServletResponse) response).setStatus(401);
             return;
         }
 
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("USER");
 
         if(path.contains("/admin") && user.getRole() != Role.ADMIN){
             response.setContentType("application/json");

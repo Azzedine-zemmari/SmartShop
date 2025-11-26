@@ -1,12 +1,18 @@
 package com.smart.shop.service.client;
 
+import com.smart.shop.dto.UserDto;
+import com.smart.shop.dto.UserRegisterDto;
 import com.smart.shop.dto.client.ClientDto;
+import com.smart.shop.enums.Niveau_fidelete;
+import com.smart.shop.enums.Role;
+import com.smart.shop.exeception.UserAlreadyExiste;
 import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.ClientMapper;
 import com.smart.shop.model.Client;
 import com.smart.shop.model.User;
 import com.smart.shop.repository.ClientRepository;
 import com.smart.shop.repository.UserRepository;
+import com.smart.shop.utils.PasswordUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,21 +29,27 @@ public class ClientServiceImpl implements ClientServiceInterface{
         this.clientMapper = clientMapper;
     }
 
-//    @Override
-//    public ClientDto creeUser(int userId,Client client){
-//        Optional<User> userOptional = userRepository.findById(userId);
-//        if(!userOptional.isPresent()){
-//            throw new UserNotFound("utilisateur avec cette id n'est pas existe");
-//        }
-//        User user = userOptional.get();
-//        Client newClient = new Client();
-//        newClient.setId(user.getId());
-//        newClient.setNom(client.getNom());
-//        newClient.setPassword(user.getPassword());
-//        newClient.setUsername(user.getUsername());
-//        newClient.setRole(user.getRole());
-//
-//        clientRepository.save(newClient);
-//        return clientMapper.ClientToClientDto(newClient);
-//    }
+    @Override
+    public ClientDto creeClient(UserRegisterDto userRegisterDto){
+        Optional<User> userisExists = userRepository.findByUsername(userRegisterDto.getUsername());
+        if(userisExists.isPresent()){
+            throw new UserAlreadyExiste("Utilisateur est deja exists");
+        }
+        User user = new User();
+        user.setUsername(userRegisterDto.getUsername());
+        String hashPassword = PasswordUtils.hashPassword(userRegisterDto.getPassword());
+        user.setPassword(hashPassword);
+        user.setRole(userRegisterDto.getRole());
+
+        User savedUser = userRepository.save(user);
+
+        Client client = new Client();
+        client.setNom(userRegisterDto.getNom());
+        client.setEmail(userRegisterDto.getEmail());
+        client.setNiveau_fidelete(Niveau_fidelete.BASIC);
+        client.setUser(savedUser);
+
+        Client savedClient = clientRepository.save(client);
+        return clientMapper.ClientToClientDto(savedClient);
+    }
 }

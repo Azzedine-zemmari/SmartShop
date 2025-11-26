@@ -18,5 +18,6 @@ public class UserRegisterDto {
 
     private String nom;  // only for client
     private Niveau_fidelete niveau_fidelete; // only for client
+    private String email;
 
 }

@@ -19,7 +19,9 @@ public class Client{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String nom ;
-    private Niveau_fidelete niveau_fidelete = Niveau_fidelete.BASIC;
+    @Enumerated(EnumType.STRING)
+    private Niveau_fidelete niveau_fidelete;
+    private String email;
 
     @JsonIgnore // to avoid json infinite loop
     @OneToMany(mappedBy = "client")
