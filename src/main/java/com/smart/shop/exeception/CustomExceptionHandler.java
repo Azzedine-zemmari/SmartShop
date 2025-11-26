@@ -46,5 +46,10 @@ public class CustomExceptionHandler {
         ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
         return new ResponseEntity<>(apiErreur,HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    @ExceptionHandler(PaymentTooLargeException.class)
+    public ResponseEntity<ApiErreur> PaymentTooLarge(PaymentTooLargeException e){
+        ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
+        return new ResponseEntity<>(apiErreur,HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 
 }
