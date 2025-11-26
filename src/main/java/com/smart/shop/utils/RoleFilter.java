@@ -40,7 +40,17 @@ public class RoleFilter implements Filter {
             ((HttpServletResponse) response).setStatus(403);
             return;
         }
+        if(path.matches("/api/v1/client/info/\\d+")){
+            String[] parts = path.split("/");
+            Integer id = Integer.parseInt(parts[parts.length-1]);
 
+            if(user.getRole() != Role.ADMIN && (user.getClient() == null || user.getClient().getId() != id)){
+                response.setContentType("application/json");
+                response.getWriter().write("error :  acces refuse");
+                ((HttpServletResponse) response).setStatus(403);
+                return;
+            }
+        }
         chain.doFilter(request,response);
 
     }

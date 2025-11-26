@@ -6,4 +6,5 @@ import com.smart.shop.model.Client;
 
 public interface ClientServiceInterface {
     ClientDto creeClient(UserRegisterDto userRegisterDto);
+    ClientDto consulterInfoClient(int id);
 }

@@ -12,5 +12,6 @@ public class ClientDto {
     private String nom;
     private Niveau_fidelete niveau_fidelete;
     private String username;
+    private String email;
     private Role role;
 }

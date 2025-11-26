@@ -20,4 +20,9 @@ public class ClientController {
         ClientDto newClient = clientService.creeClient(userRegisterDto);
         return ResponseEntity.ok(newClient);
     }
+    @GetMapping("/info/{id}")
+    public ResponseEntity<ClientDto> getClientInfo(@PathVariable("id") int id){
+        ClientDto clientDto = clientService.consulterInfoClient(id);
+        return ResponseEntity.ok(clientDto);
+    }
 }

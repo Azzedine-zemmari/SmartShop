@@ -52,4 +52,13 @@ public class ClientServiceImpl implements ClientServiceInterface{
         Client savedClient = clientRepository.save(client);
         return clientMapper.ClientToClientDto(savedClient);
     }
+
+    @Override
+    public ClientDto consulterInfoClient(int id) {
+        Optional<Client> client = clientRepository.findById(id);
+        if(!client.isPresent()){
+            throw new UserNotFound("client n'est pas trouve");
+        }
+        return clientMapper.ClientToClientDto(client.get());
+    }
 }
