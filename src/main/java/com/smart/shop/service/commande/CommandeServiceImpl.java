@@ -73,6 +73,16 @@ public class CommandeServiceImpl implements CommandeService{
 
         Commande savedCommande = commandeRepository.save(commande);
 
+        int totalOrders = commandeRepository.countByClientId(client.getId());
+        double totalSpent= commandeRepository.sumTotalByClientId(client.getId());
+        Niveau_fidelete newLvl = calculateNiveauFidelete(totalOrders,totalSpent);
+
+        if(client.getNiveau_fidelete() != newLvl){
+        System.out.print("lvl" + newLvl);
+            client.setNiveau_fidelete(newLvl);
+            clientRepository.save(client);
+        }
+
         return commandeMapper.toRequestDto(savedCommande);
     }
     private Niveau_fidelete calculateNiveauFidelete(int totalOrders, double totalSpent){
