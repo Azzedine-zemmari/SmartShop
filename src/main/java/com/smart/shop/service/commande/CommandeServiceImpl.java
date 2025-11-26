@@ -15,9 +15,11 @@ import com.smart.shop.model.Product;
 import com.smart.shop.repository.ClientRepository;
 import com.smart.shop.repository.CommandeRepository;
 import com.smart.shop.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class CommandeServiceImpl implements CommandeService{
     private final CommandeMapper commandeMapper;
 
     @Override
+    @Transactional
     public CommandeRequestDto createCommande(CommandeRequestDto dto){
         Client client = clientRepository.findById(dto.getClientId()).orElseThrow(()-> new UserNotFound("Veuillez saisir un client "));
 
@@ -78,9 +81,7 @@ public class CommandeServiceImpl implements CommandeService{
         Niveau_fidelete newLvl = calculateNiveauFidelete(totalOrders,totalSpent);
 
         if(client.getNiveau_fidelete() != newLvl){
-        System.out.print("lvl" + newLvl);
-            client.setNiveau_fidelete(newLvl);
-            clientRepository.save(client);
+            clientRepository.updateNiveauFidelete(client.getId() , newLvl);
         }
 
         return commandeMapper.toRequestDto(savedCommande);
