@@ -23,6 +23,6 @@ public class Product {
     @OneToMany(mappedBy="product")
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Column(nullable = true)
-    private LocalDateTime deleted_at;
+    @Column(name= "deleted_at" , nullable = true)
+    private LocalDateTime deletedAt;
 }

@@ -5,6 +5,8 @@ import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.mapper.ProductMapper;
 import com.smart.shop.model.Product;
 import com.smart.shop.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,9 +57,14 @@ public class ProductServiceImpl  implements ProductService{
     @Override
     public String deleteProduct(int id){
         Product product = productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("produit not found"));
-        product.setDeleted_at(LocalDateTime.now());
+        product.setDeletedAt(LocalDateTime.now());
         productRepository.save(product);
         return "product deleted";
+    }
+    @Override
+    public Page<ProductDto> findAllProduct(Pageable pageable){
+        return productRepository.findByDeletedAtIsNull(pageable)
+                .map(productMapper::productToProductDto);
     }
 
 }

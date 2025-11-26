@@ -3,6 +3,8 @@ package com.smart.shop.controller;
 import com.smart.shop.dto.ProductDto;
 import com.smart.shop.model.Product;
 import com.smart.shop.service.product.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,5 +29,9 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") int id){
         return ResponseEntity.ok(productService.deleteProduct(id));
+    }
+    @GetMapping("/all")
+    public Page<ProductDto> getProducts(Pageable pageable) {
+        return productService.findAllProduct(pageable);
     }
 }
