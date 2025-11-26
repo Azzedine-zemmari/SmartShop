@@ -8,4 +8,5 @@ public interface ClientServiceInterface {
     ClientDto creeClient(UserRegisterDto userRegisterDto);
     ClientDto consulterInfoClient(int id);
     ClientDto updateClientInfo(int id, ClientDto clientDto);
+    void deleteClient(int id);
 }

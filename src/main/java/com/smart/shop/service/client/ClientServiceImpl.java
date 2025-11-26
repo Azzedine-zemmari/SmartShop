@@ -89,4 +89,8 @@ public class ClientServiceImpl implements ClientServiceInterface{
 
         return updateDto;
     }
+    public void deleteClient(int id){
+        Client client = clientRepository.findById(id).orElseThrow(()-> new UserNotFound("utilisateur n est pas trouve"));
+        clientRepository.delete(client);
+    }
 }

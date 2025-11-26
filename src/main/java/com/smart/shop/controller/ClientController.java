@@ -30,4 +30,9 @@ public class ClientController {
         ClientDto updateClientDto = clientService.updateClientInfo(id,clientDto);
         return ResponseEntity.ok(updateClientDto);
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> updateClientInfo(@PathVariable("id") int id){
+        clientService.deleteClient(id);
+        return ResponseEntity.ok("client supprimer avec success");
+    }
 }
