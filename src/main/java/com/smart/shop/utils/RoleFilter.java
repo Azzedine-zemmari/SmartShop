@@ -7,11 +7,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PathMatcher;
 
 import java.io.IOException;
 
 @Component
 public class RoleFilter implements Filter {
+    private final PathMatcher pathMatcher;
+
+    public RoleFilter(PathMatcher pathMatcher) {
+        this.pathMatcher = pathMatcher;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)  throws IOException, ServletException {
 
@@ -40,7 +47,7 @@ public class RoleFilter implements Filter {
             ((HttpServletResponse) response).setStatus(403);
             return;
         }
-        if(path.matches("/api/v1/client/info/\\d+")){
+        if(path.matches("/api/v1/client/info/\\d+") || path.matches("/api/v1/client/update/\\d+")){
             String[] parts = path.split("/");
             Integer id = Integer.parseInt(parts[parts.length-1]);
 

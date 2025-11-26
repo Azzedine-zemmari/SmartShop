@@ -61,4 +61,32 @@ public class ClientServiceImpl implements ClientServiceInterface{
         }
         return clientMapper.clientToClientDto(client.get());
     }
+    @Override
+    public ClientDto updateClientInfo(int id , ClientDto clientDto){
+        Client client = clientRepository.findById(id).orElseThrow(() -> new UserNotFound("client n'est pas trouve"));
+
+        if (clientDto.getEmail() != null) {
+            client.setEmail(clientDto.getEmail());
+        }
+        if (clientDto.getNom() != null) {
+            client.setNom(clientDto.getNom());
+        }
+        if (clientDto.getNiveau_fidelete() != null) {
+            client.setNiveau_fidelete(clientDto.getNiveau_fidelete());
+        }
+        if (client.getUser() != null) {
+            if (clientDto.getUsername() != null) {
+                client.getUser().setUsername(clientDto.getUsername());
+            }
+            if (clientDto.getRole() != null) {
+                client.getUser().setRole(clientDto.getRole());
+            }
+        }
+
+        clientRepository.save(client);
+
+        ClientDto updateDto = clientMapper.clientToClientDto(client);
+
+        return updateDto;
+    }
 }

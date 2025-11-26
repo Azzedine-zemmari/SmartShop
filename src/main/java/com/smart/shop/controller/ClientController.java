@@ -25,4 +25,9 @@ public class ClientController {
         ClientDto clientDto = clientService.consulterInfoClient(id);
         return ResponseEntity.ok(clientDto);
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ClientDto> updateClientInfo(@PathVariable("id") int id, @RequestBody ClientDto clientDto){
+        ClientDto updateClientDto = clientService.updateClientInfo(id,clientDto);
+        return ResponseEntity.ok(updateClientDto);
+    }
 }

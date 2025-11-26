@@ -27,7 +27,7 @@ public class Client{
     @OneToMany(mappedBy = "client")
     private List<Commande> commandes;
 
-    @OneToOne
-    @JoinColumn(name="user_id",referencedColumnName = "id")
+    @OneToOne(optional = false)
+    @JoinColumn(name="user_id",referencedColumnName = "id",nullable = false)
     private User user;
 }
