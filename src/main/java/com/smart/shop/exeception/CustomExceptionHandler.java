@@ -35,5 +35,11 @@ public class CustomExceptionHandler {
         apiErreur.setStatus(401);
         return new ResponseEntity<>(apiErreur, HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ApiErreur> ProductNotFound(ProductNotFoundException e){
+        ApiErreur apiErreur = new ApiErreur(e.getMessage(),LocalDateTime.now(),404);
+        return new ResponseEntity<>(apiErreur,HttpStatus.NOT_FOUND);
+
+    }
 
 }
