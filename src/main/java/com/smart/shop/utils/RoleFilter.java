@@ -41,12 +41,13 @@ public class RoleFilter implements Filter {
 
         User user = (User) session.getAttribute("USER");
 
-        if(path.contains("/admin") && user.getRole() != Role.ADMIN){
+        if((path.contains("/admin") || path.contains("/product")) && user.getRole() != Role.ADMIN){
             response.setContentType("application/json");
             response.getWriter().write("error :  acces refuse");
             ((HttpServletResponse) response).setStatus(403);
             return;
         }
+//        // todo : update and delete only for admin to do
         if(path.matches("/api/v1/client/info/\\d+") || path.matches("/api/v1/client/update/\\d+") || path.matches("/api/v1/client/delete/\\d+")){
             String[] parts = path.split("/");
             Integer id = Integer.parseInt(parts[parts.length-1]);

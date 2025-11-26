@@ -1,0 +1,34 @@
+package com.smart.shop.service.product;
+
+import com.smart.shop.dto.ProductDto;
+import com.smart.shop.mapper.ProductMapper;
+import com.smart.shop.model.Product;
+import com.smart.shop.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductServiceImpl  implements ProductService{
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+    public ProductServiceImpl(ProductRepository productRepository , ProductMapper productMapper){
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
+    }
+
+    @Override
+    public String createProduct(ProductDto productDto) {
+        try{
+        Product product = new Product();
+        product.setNom(productDto.getNom());
+        product.setPrix_unitaire(productDto.getPrixUnitaire());
+        product.setStock_disponible(productDto.getStockDisponible());
+
+        Product productSaved = productRepository.save(product);
+
+        return "product created successfully";
+        }catch(IllegalArgumentException e){
+            return "Exception : " + e.getMessage();
+        }
+    }
+
+}
