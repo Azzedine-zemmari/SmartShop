@@ -7,6 +7,8 @@ import com.smart.shop.model.Product;
 import com.smart.shop.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ProductServiceImpl  implements ProductService{
     private final ProductRepository productRepository;
@@ -49,6 +51,13 @@ public class ProductServiceImpl  implements ProductService{
         }catch(Exception e){
             return "exception : " + e.getMessage();
         }
+    }
+    @Override
+    public String deleteProduct(int id){
+        Product product = productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("produit not found"));
+        product.setDeleted_at(LocalDateTime.now());
+        productRepository.save(product);
+        return "product deleted";
     }
 
 }

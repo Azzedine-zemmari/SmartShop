@@ -3,6 +3,7 @@ package com.smart.shop.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,4 +22,7 @@ public class Product {
 
     @OneToMany(mappedBy="product")
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @Column(nullable = true)
+    private LocalDateTime deleted_at;
 }
