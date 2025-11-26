@@ -41,5 +41,10 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(apiErreur,HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler(NotEnoughStockException.class)
+    public ResponseEntity<ApiErreur> StockNotEnough(NotEnoughStockException e){
+        ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
+        return new ResponseEntity<>(apiErreur,HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.smart.shop.service.commande;
 
 import com.smart.shop.dto.CommandeRequestDto;
 import com.smart.shop.dto.OrderItemRequestDto;
+import com.smart.shop.exeception.NotEnoughStockException;
 import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.CommandeMapper;
@@ -16,6 +17,7 @@ import com.smart.shop.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,10 +33,15 @@ public class CommandeServiceImpl implements CommandeService{
         Client client = clientRepository.findById(dto.getClientId()).orElseThrow(()-> new UserNotFound("Veuillez saisir un client "));
 
         // fetch product
-        List<Product> products = dto.getItems().stream()
-                .map(item-> productRepository.findById(item.getProductId())
-                        .orElseThrow(()-> new ProductNotFoundException("Veuillez saisir un produit deja exist"))
-                ).toList();
+        List<Product> products = new ArrayList<>();
+        for(OrderItemRequestDto item : dto.getItems()){
+            Product product = productRepository.findById(item.getProductId()).orElseThrow(()-> new ProductNotFoundException("Veuillez saisir un produit deja exist"));
+            if(item.getQuantity() > product.getStock_disponible()){
+                throw new NotEnoughStockException("Le produit " + product.getNom()  + " na pas assez de stock "+ "Demande: " + item.getQuantity()
+                        + ", Disponible: " + product.getStock_disponible());
+            }
+            products.add(product);
+        }
 
         Commande commande = commandeMapper.toEntity(dto);
 
