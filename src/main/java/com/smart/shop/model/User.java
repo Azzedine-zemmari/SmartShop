@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    private int id;
 
-    protected String username;
+    private String username;
 
-    protected String password ;
+    private String password ;
 
     @Enumerated(EnumType.STRING)
-    protected Role role;
+    private Role role;
 
     @OneToOne(mappedBy = "user")
     private Client client;

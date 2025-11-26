@@ -50,7 +50,7 @@ public class ClientServiceImpl implements ClientServiceInterface{
         client.setUser(savedUser);
 
         Client savedClient = clientRepository.save(client);
-        return clientMapper.ClientToClientDto(savedClient);
+        return clientMapper.clientToClientDto(savedClient);
     }
 
     @Override
@@ -59,6 +59,6 @@ public class ClientServiceImpl implements ClientServiceInterface{
         if(!client.isPresent()){
             throw new UserNotFound("client n'est pas trouve");
         }
-        return clientMapper.ClientToClientDto(client.get());
+        return clientMapper.clientToClientDto(client.get());
     }
 }
