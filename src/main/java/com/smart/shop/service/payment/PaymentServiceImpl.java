@@ -49,9 +49,9 @@ public class PaymentServiceImpl implements PaymentService{
         }
         commande.setMontant_restant(montantRestant);
         commandeRepository.updateMontantRestant(montantRestant , commande.getId());
-        if(montantRestant == 0.0){
-            commandeRepository.updateStatus(commande.getId() , OrderStatus.CONFIRMED);
-        }
+//        if(montantRestant == 0.0){
+//            commandeRepository.updateStatus(commande.getId() , OrderStatus.CONFIRMED);
+//        }
         Payment saved = paymentRepository.save(payment);
 
         return paymentMapper.toDto(saved);

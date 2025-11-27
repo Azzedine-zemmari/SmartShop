@@ -16,7 +16,6 @@ public class CommandeMapper {
     public Commande toEntity(CommandeRequestDto commandeRequestDto){
         Commande commande = new Commande();
         commande.setDate(LocalDateTime.now());
-        commande.setDiscount(commandeRequestDto.getDiscount());
         commande.setTva(commandeRequestDto.getTva());
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemRequestDto item : commandeRequestDto.getItems()){
@@ -31,7 +30,6 @@ public class CommandeMapper {
     }
     public CommandeRequestDto toRequestDto(Commande commande){
         CommandeRequestDto commandeRequestDto = new CommandeRequestDto();
-        commandeRequestDto.setDiscount(commande.getDiscount());
         commandeRequestDto.setClientId(commande.getClient().getId());
         commandeRequestDto.setTva(commande.getTva());
 

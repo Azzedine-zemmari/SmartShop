@@ -8,6 +8,5 @@ import java.util.List;
 public class CommandeRequestDto {
     private Integer clientId;
     private List<OrderItemRequestDto> items;
-    private double discount;
     private double tva;
 }

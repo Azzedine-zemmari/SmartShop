@@ -69,11 +69,15 @@ public class CommandeServiceImpl implements CommandeService{
             sous_total += orderItem.getTotal();
         }
 
+        // set discount
+        double discout = calculteDiscount(sous_total,client.getNiveau_fidelete());
+        commande.setDiscount(discout);
         // set total
         commande.setSous_total(sous_total);
-        double total = sous_total - dto.getDiscount() + dto.getTva() ;
+        double total = sous_total - discout + dto.getTva() ;
         commande.setTotal(total);
         commande.setMontant_restant(total);
+        commande.setStatus(OrderStatus.PENDING);
 
         // save
 
@@ -103,5 +107,17 @@ public class CommandeServiceImpl implements CommandeService{
         }
 
         return Niveau_fidelete.BASIC;
+    }
+    private Double calculteDiscount(double sous_total , Niveau_fidelete niveauFidelete){
+        switch(niveauFidelete){
+            case SILVER:
+                return (sous_total >= 500) ? sous_total * 0.05 : 0.0;
+            case GOLD:
+                return (sous_total >= 800) ? sous_total * 0.10 : 0.0;
+            case PLATINUM:
+                return (sous_total >= 1200) ? sous_total * 0.15 : 0.0;
+            default:
+                return 0.0;
+        }
     }
 }

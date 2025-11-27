@@ -22,6 +22,7 @@ public class Client{
     private Niveau_fidelete niveau_fidelete ;
     private String email;
 
+    @ToString.Exclude // to fix stackOverflow erreur
     @JsonIgnore // to avoid json infinite loop
     @OneToMany(mappedBy = "client")
     private List<Commande> commandes;
