@@ -5,6 +5,9 @@ import com.smart.shop.repository.CommandeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class StatistiqueImpl implements StatistiqueService{
     private final CommandeRepository commandeRepository;
@@ -13,13 +16,26 @@ public class StatistiqueImpl implements StatistiqueService{
         this.commandeRepository = commandeRepository;
     }
     @Override
-    public Long totalCommandes(){
-        return commandeRepository.countAllCommande();
+    public Integer totalCommandes(Integer id){
+        return commandeRepository.countByUserIdAndStatus(id,OrderStatus.CONFIRMED);
     }
 
     @Override
-    public Double totalCumule(){
-        Double total = commandeRepository.sumTotalCommandeConfirmed(OrderStatus.CONFIRMED);
+    public Double totalCumule(Integer id){
+        double total = commandeRepository.sumTotalByUserId(id,OrderStatus.CONFIRMED);
         return Math.round(total * 100.0) / 100.0;
+    }
+
+    @Override
+    public String firstAndLastDateCommande(Integer id){
+        List<Object[]> result = commandeRepository.findFirstAndLastCommandeDateForUser(id);
+        Object[] firstRow = result.get(0);
+        LocalDateTime first = (LocalDateTime) firstRow[0];
+        LocalDateTime last = (LocalDateTime) firstRow[1];
+        if(first == null || last == null){
+            return "Aucune commande trouvee pour cet utilisateur.";
+        }
+        return first + " : " + last;
+
     }
 }

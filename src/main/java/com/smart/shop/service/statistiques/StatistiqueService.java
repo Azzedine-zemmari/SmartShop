@@ -1,6 +1,7 @@
 package com.smart.shop.service.statistiques;
 
 public interface StatistiqueService {
-    Long totalCommandes();
-    Double totalCumule();
+    Integer totalCommandes(Integer id);
+    Double totalCumule(Integer id);
+    String firstAndLastDateCommande(Integer id);
 }
