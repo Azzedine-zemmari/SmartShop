@@ -17,6 +17,7 @@ public class CommandeMapper {
         Commande commande = new Commande();
         commande.setDate(LocalDateTime.now());
         commande.setTva(commandeRequestDto.getTva());
+        commande.setCode_promo(commandeRequestDto.getCode_promo());
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemRequestDto item : commandeRequestDto.getItems()){
             OrderItem orderItem = new OrderItem();
@@ -32,6 +33,10 @@ public class CommandeMapper {
         CommandeRequestDto commandeRequestDto = new CommandeRequestDto();
         commandeRequestDto.setClientId(commande.getClient().getId());
         commandeRequestDto.setTva(commande.getTva());
+        commandeRequestDto.setCode_promo(commande.getCode_promo());
+        commandeRequestDto.setDiscount(commande.getDiscount());
+        commandeRequestDto.setTotal(commande.getTotal());
+        commandeRequestDto.setSous_total(commande.getSous_total());
 
         List<OrderItemRequestDto> items = commande.getOrderItems().stream().map(orderItem -> {
             OrderItemRequestDto itemDto = new OrderItemRequestDto();

@@ -38,6 +38,8 @@ public class CommandeServiceImpl implements CommandeService{
     @Override
     @Transactional
     public CommandeRequestDto createCommande(CommandeRequestDto dto){
+        List<String> promoCodes = List.of("PROMO-AB12", "PROMO-X6GZ", "PROMO-CF2R");
+
         Commande commande = commandeMapper.toEntity(dto);
 
         Client client = clientRepository.findById(dto.getClientId()).orElseThrow(()-> new UserNotFound("Veuillez saisir un client "));
@@ -73,7 +75,10 @@ public class CommandeServiceImpl implements CommandeService{
             orderItem.setQuantity(itemDto.getQuantity());
             orderItem.setTotal_ligne(orderItem.getTotal());
             sous_total += orderItem.getTotal();
+            sous_total = round(sous_total);
         }
+
+        commande.setSous_total(sous_total);
 
         // handle status
         if(stockInsuffisant){
@@ -86,18 +91,34 @@ public class CommandeServiceImpl implements CommandeService{
             return commandeMapper.toRequestDto(commandeRejected);
         }
 
-        // normal order
-        // set discount
+        // calculer remise fidelete
 
-        double discout = calculteDiscount(sous_total,client.getNiveau_fidelete());
-        commande.setDiscount(discout);
-        // set total
+        double remiseFidelete = calculteDiscount(sous_total,client.getNiveau_fidelete());
 
-        commande.setSous_total(sous_total);
-        double total = sous_total - discout + dto.getTva() ;
+        // calculer remise promo code
+        double remiseCode = 0.0;
+        if(dto.getCode_promo() != null && promoCodes.contains(dto.getCode_promo())){
+            remiseCode = round(sous_total * 0.05); // +5%
+            commande.setCode_promo(dto.getCode_promo());
+        }
 
-        commande.setTotal(total);
-        commande.setMontant_restant(total);
+        double remiseTotal = round(remiseFidelete + remiseCode);
+
+        // apply discount
+        double montantApreRemise = round(sous_total - remiseTotal);
+
+        // tva
+
+        double tva = round(montantApreRemise * 0.20);
+
+        // total ttc
+
+        double totalTTC = round(montantApreRemise + tva);
+
+        commande.setDiscount(remiseTotal);
+        commande.setTotal(totalTTC);
+        commande.setTva(tva);
+        commande.setMontant_restant(totalTTC);
         commande.setStatus(OrderStatus.PENDING);
 
         // save
@@ -141,6 +162,9 @@ public class CommandeServiceImpl implements CommandeService{
             default:
                 return 0.0;
         }
+    }
+    private double round(double value){
+        return Math.round(value * 100.0) / 100.0;
     }
     @Override
     @Transactional

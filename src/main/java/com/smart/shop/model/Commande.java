@@ -2,6 +2,7 @@ package com.smart.shop.model;
 
 import com.smart.shop.enums.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -47,7 +48,10 @@ public class Commande {
     @ToString.Include
     private OrderStatus status;
 
-    // todo add code promo model
+
+    @Column(unique = true)
+    @Pattern(regexp = "PROMO-[A-Z0-9]{4}")
+    private String code_promo;
 
     @ToString.Include
     private Double montant_restant;
