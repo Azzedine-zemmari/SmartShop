@@ -72,6 +72,7 @@ public class CommandeServiceImpl implements CommandeService{
         // set discount
         double discout = calculteDiscount(sous_total,client.getNiveau_fidelete());
         commande.setDiscount(discout);
+        System.out.print("Discount : " +  discout);
         // set total
         commande.setSous_total(sous_total);
         double total = sous_total - discout + dto.getTva() ;
@@ -120,4 +121,23 @@ public class CommandeServiceImpl implements CommandeService{
                 return 0.0;
         }
     }
+    @Override
+    @Transactional
+    public void ConfirmeCommande(Long commandeId) {
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        Double montantRestant = commande.getMontant_restant();
+
+        if (montantRestant == null) {
+            throw new RuntimeException("Montant restant non disponible");
+        }
+
+        if (montantRestant > 0.0) {
+            throw new RuntimeException("Impossible de confirmer : le montant restant n'est pas payé");
+        }
+
+        commandeRepository.updateStatus(commandeId, OrderStatus.CONFIRMED);
+    }
+
 }

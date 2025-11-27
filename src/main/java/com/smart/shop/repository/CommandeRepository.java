@@ -21,4 +21,7 @@ public interface CommandeRepository extends JpaRepository<Commande,Long> {
     @Modifying
     @Query("UPDATE Commande c set c.status = :status where c.id = :commandeId")
     void updateStatus(@Param("commandeId") Long commandeId , @Param("status") OrderStatus status);
+
+    @Query("Select c.montant_restant FROM Commande c where c.id = :commandeId")
+    Double getMontantRestant(Long commandeId);
 }

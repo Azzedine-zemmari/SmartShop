@@ -33,6 +33,12 @@ public class PaymentServiceImpl implements PaymentService{
 
         Optional<Payment> lastPayment = paymentRepository.findTopByCommandeIdOrderByNumeroPaiementDesc(commande.getId());
         int nextNumber = lastPayment.map(p-> p.getNumeroPaiement() + 1).orElse(1);
+
+        double montantRestant = commande.getMontant_restant();
+        if (dto.getMontant() > montantRestant) {
+            throw new PaymentTooLargeException("Le montant payé dépasse le montant restant !");
+        }
+
         Payment payment = new Payment();
         payment.setCommande(commande);
         payment.setMontant(dto.getMontant());
@@ -41,14 +47,11 @@ public class PaymentServiceImpl implements PaymentService{
         payment.setTypePaiement(dto.getTypePaiement());
         payment.setNumeroPaiement(nextNumber);
 
-        double totalPaye = paymentRepository.sumMontantByCommandeId(commande.getId()).orElse(0.0);
-        double montantRestant = commande.getTotal() - totalPaye - dto.getMontant();
+//        double totalPaye = paymentRepository.sumMontantByCommandeId(commande.getId()).orElse(0.0);
 
-        if (dto.getMontant() > montantRestant) {
-            throw new PaymentTooLargeException("Le montant payé dépasse le montant restant !");
-        }
-        commande.setMontant_restant(montantRestant);
-        commandeRepository.updateMontantRestant(montantRestant , commande.getId());
+        double newMontant_Restant = montantRestant - dto.getMontant();
+        commande.setMontant_restant(newMontant_Restant);
+        commandeRepository.updateMontantRestant(newMontant_Restant , commande.getId());
 //        if(montantRestant == 0.0){
 //            commandeRepository.updateStatus(commande.getId() , OrderStatus.CONFIRMED);
 //        }

@@ -5,10 +5,7 @@ import com.smart.shop.service.commande.CommandeService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/commande")
@@ -20,5 +17,10 @@ public class CommandeController {
     public ResponseEntity<CommandeRequestDto> createCommande(@RequestBody CommandeRequestDto dto ){
         CommandeRequestDto commandeRequestDto = commandeService.createCommande(dto);
         return ResponseEntity.ok(commandeRequestDto);
+    }
+    @PostMapping("/confirme/{id}")
+    public ResponseEntity<String> confirmCommande(@PathVariable("id") Long commandeId){
+        commandeService.ConfirmeCommande(commandeId);
+        return ResponseEntity.ok("commande : " + commandeId + " confirme avec success");
     }
 }
