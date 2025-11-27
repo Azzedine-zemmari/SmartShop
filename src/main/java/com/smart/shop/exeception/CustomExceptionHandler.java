@@ -1,5 +1,6 @@
 package com.smart.shop.exeception;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,6 +51,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<ApiErreur> PaymentTooLarge(PaymentTooLargeException e){
         ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
         return new ResponseEntity<>(apiErreur,HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    @ExceptionHandler(CannotCancelOrderException.class)
+    public ResponseEntity<ApiErreur> CannotCancel(CannotCancelOrderException e){
+        ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
+        return new ResponseEntity<>(apiErreur , HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 }

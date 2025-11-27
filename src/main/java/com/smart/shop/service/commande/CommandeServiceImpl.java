@@ -4,6 +4,7 @@ import com.smart.shop.dto.CommandeRequestDto;
 import com.smart.shop.dto.OrderItemRequestDto;
 import com.smart.shop.enums.Niveau_fidelete;
 import com.smart.shop.enums.OrderStatus;
+import com.smart.shop.exeception.CannotCancelOrderException;
 import com.smart.shop.exeception.NotEnoughStockException;
 import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.exeception.UserNotFound;
@@ -169,5 +170,20 @@ public class CommandeServiceImpl implements CommandeService{
 
         commandeRepository.updateStatus(commandeId, OrderStatus.CONFIRMED);
     }
+
+    @Override
+    @Transactional
+    public void CancelCommande(Long commandeId) {
+        Commande commande = commandeRepository.findById(commandeId)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if(commande.getOrderItems().equals(OrderStatus.CONFIRMED) || commande.getOrderItems().equals(OrderStatus.REJECTED)){
+            throw new CannotCancelOrderException("Vous ne pouvez pas annuler une commande déjà confirmée ou rejeter");
+        }
+
+        commandeRepository.updateStatus(commandeId, OrderStatus.CANCELED);
+    }
+
+
 
 }

@@ -23,4 +23,9 @@ public class CommandeController {
         commandeService.ConfirmeCommande(commandeId);
         return ResponseEntity.ok("commande : " + commandeId + " confirme avec success");
     }
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelCommande(@PathVariable("id") Long commandeId){
+        commandeService.CancelCommande(commandeId);
+        return ResponseEntity.ok("commande : " + commandeId + " annuller avec success");
+    }
 }

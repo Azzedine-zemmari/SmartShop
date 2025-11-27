@@ -6,4 +6,5 @@ import com.smart.shop.enums.OrderStatus;
 public interface CommandeService {
     CommandeRequestDto createCommande(CommandeRequestDto dto);
     void ConfirmeCommande(Long commandeId);
+    void CancelCommande(Long commandeId);
 }
