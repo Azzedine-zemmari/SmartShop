@@ -15,6 +15,7 @@ import com.smart.shop.model.OrderItem;
 import com.smart.shop.model.Product;
 import com.smart.shop.repository.ClientRepository;
 import com.smart.shop.repository.CommandeRepository;
+import com.smart.shop.repository.OrderItemsRepository;
 import com.smart.shop.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class CommandeServiceImpl implements CommandeService{
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
     private final CommandeMapper commandeMapper;
+    private final OrderItemsRepository orderItemsRepository;
 
     @Override
     @Transactional
@@ -135,6 +137,16 @@ public class CommandeServiceImpl implements CommandeService{
 
         if (montantRestant > 0.0) {
             throw new RuntimeException("Impossible de confirmer : le montant restant n'est pas payé");
+        }
+
+        List<OrderItem> items = orderItemsRepository.findByCommandeId(commandeId);
+
+        for(OrderItem item : items){
+            Product product = item.getProduct();
+
+            Integer newStock = product.getStock_disponible() - item.getQuantity();
+
+            productRepository.updateStockDisponible(newStock,product.getId());
         }
 
         commandeRepository.updateStatus(commandeId, OrderStatus.CONFIRMED);
