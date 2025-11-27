@@ -1,11 +1,15 @@
 package com.smart.shop.controller;
 
 import com.smart.shop.dto.CommandeRequestDto;
+import com.smart.shop.dto.CommandeSummaryProjection;
+import com.smart.shop.model.User;
 import com.smart.shop.service.commande.CommandeService;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/commande")
@@ -28,4 +32,13 @@ public class CommandeController {
         commandeService.CancelCommande(commandeId);
         return ResponseEntity.ok("commande : " + commandeId + " annuller avec success");
     }
+
+    @GetMapping("/myCommandes")
+    public ResponseEntity< List<CommandeSummaryProjection>> getCommandes(HttpSession session) {
+        User user = (User) session.getAttribute("USER");
+        Integer id = user.getId();
+        List<CommandeSummaryProjection> commandes = commandeService.getAllCommandeForUser(id);
+        return ResponseEntity.ok(commandes);
+    }
+
 }

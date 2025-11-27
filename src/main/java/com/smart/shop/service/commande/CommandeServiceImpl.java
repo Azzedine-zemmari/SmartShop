@@ -1,15 +1,14 @@
 package com.smart.shop.service.commande;
 
 import com.smart.shop.dto.CommandeRequestDto;
+import com.smart.shop.dto.CommandeSummaryProjection;
 import com.smart.shop.dto.OrderItemRequestDto;
 import com.smart.shop.enums.Niveau_fidelete;
 import com.smart.shop.enums.OrderStatus;
 import com.smart.shop.exeception.CannotCancelOrderException;
-import com.smart.shop.exeception.NotEnoughStockException;
 import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.CommandeMapper;
-import com.smart.shop.mapper.ProductMapper;
 import com.smart.shop.model.Client;
 import com.smart.shop.model.Commande;
 import com.smart.shop.model.OrderItem;
@@ -22,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +206,10 @@ public class CommandeServiceImpl implements CommandeService{
         commandeRepository.updateStatus(commandeId, OrderStatus.CANCELED);
     }
 
+    @Override
+    public  List<CommandeSummaryProjection> getAllCommandeForUser(Integer userId) {
+        return commandeRepository.findAllByUserId(userId);
+    }
 
 
 }
