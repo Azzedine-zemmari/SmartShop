@@ -37,9 +37,13 @@ public class CommandeServiceImpl implements CommandeService{
     @Override
     @Transactional
     public CommandeRequestDto createCommande(CommandeRequestDto dto){
+        Commande commande = commandeMapper.toEntity(dto);
+
         Client client = clientRepository.findById(dto.getClientId()).orElseThrow(()-> new UserNotFound("Veuillez saisir un client "));
 
-        // fetch product
+        // check stock
+        boolean stockInsuffisant = false;
+
         List<Product> products = new ArrayList<>();
         for(OrderItemRequestDto item : dto.getItems()){
             Product product = productRepository.findById(item.getProductId()).orElseThrow(()-> new ProductNotFoundException("Veuillez saisir un produit deja exist"));
@@ -50,7 +54,6 @@ public class CommandeServiceImpl implements CommandeService{
             products.add(product);
         }
 
-        Commande commande = commandeMapper.toEntity(dto);
 
         commande.setClient(client);
 

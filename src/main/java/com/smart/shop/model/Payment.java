@@ -22,6 +22,7 @@ public class Payment {
     @JoinColumn(name="id_commande")
     private Commande commande;
     private double montant;
+    @Enumerated(EnumType.STRING)
     private TypePayment typePaiement;
     private Integer numeroPaiement;
     private LocalDate datePaiement;
