@@ -3,6 +3,7 @@ package com.smart.shop.service.commande;
 import com.smart.shop.dto.CommandeRequestDto;
 import com.smart.shop.dto.OrderItemRequestDto;
 import com.smart.shop.enums.Niveau_fidelete;
+import com.smart.shop.enums.OrderStatus;
 import com.smart.shop.exeception.NotEnoughStockException;
 import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.exeception.UserNotFound;
@@ -78,8 +79,8 @@ public class CommandeServiceImpl implements CommandeService{
 
         Commande savedCommande = commandeRepository.save(commande);
 
-        int totalOrders = commandeRepository.countByClientId(client.getId());
-        double totalSpent= commandeRepository.sumTotalByClientId(client.getId());
+        int totalOrders = commandeRepository.countByClientIdAndStatus(client.getId() , OrderStatus.CONFIRMED);
+        double totalSpent= commandeRepository.sumTotalByClientId(client.getId() ,OrderStatus.CONFIRMED);
         Niveau_fidelete newLvl = calculateNiveauFidelete(totalOrders,totalSpent);
 
         if(client.getNiveau_fidelete() != newLvl){

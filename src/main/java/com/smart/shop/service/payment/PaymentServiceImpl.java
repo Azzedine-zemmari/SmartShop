@@ -1,6 +1,7 @@
 package com.smart.shop.service.payment;
 
 import com.smart.shop.dto.PaymentDto;
+import com.smart.shop.enums.OrderStatus;
 import com.smart.shop.exeception.PaymentTooLargeException;
 import com.smart.shop.mapper.PaymentMapper;
 import com.smart.shop.model.Commande;
@@ -48,6 +49,9 @@ public class PaymentServiceImpl implements PaymentService{
         }
         commande.setMontant_restant(montantRestant);
         commandeRepository.updateMontantRestant(montantRestant , commande.getId());
+        if(montantRestant == 0.0){
+            commandeRepository.updateStatus(commande.getId() , OrderStatus.CONFIRMED);
+        }
         Payment saved = paymentRepository.save(payment);
 
         return paymentMapper.toDto(saved);
