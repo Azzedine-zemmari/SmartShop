@@ -24,4 +24,10 @@ public interface CommandeRepository extends JpaRepository<Commande,Long> {
 
     @Query("Select c.montant_restant FROM Commande c where c.id = :commandeId")
     Double getMontantRestant(Long commandeId);
+
+    @Query("select count(c) from Commande c")
+    Long countAllCommande();
+
+    @Query("select coalesce(sum(c.total) , 0) from Commande c where c.status = :status")
+    Double sumTotalCommandeConfirmed(@Param("status") OrderStatus status);
 }
