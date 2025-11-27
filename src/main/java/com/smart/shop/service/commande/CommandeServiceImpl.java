@@ -48,8 +48,7 @@ public class CommandeServiceImpl implements CommandeService{
         for(OrderItemRequestDto item : dto.getItems()){
             Product product = productRepository.findById(item.getProductId()).orElseThrow(()-> new ProductNotFoundException("Veuillez saisir un produit deja exist"));
             if(item.getQuantity() > product.getStock_disponible()){
-                throw new NotEnoughStockException("Le produit " + product.getNom()  + " na pas assez de stock "+ "Demande: " + item.getQuantity()
-                        + ", Disponible: " + product.getStock_disponible());
+                stockInsuffisant = true;
             }
             products.add(product);
         }
@@ -57,6 +56,7 @@ public class CommandeServiceImpl implements CommandeService{
 
         commande.setClient(client);
 
+        // build order items
         double sous_total = 0.0;
 
         for(int i=0;i<commande.getOrderItems().size();i++){
@@ -74,13 +74,27 @@ public class CommandeServiceImpl implements CommandeService{
             sous_total += orderItem.getTotal();
         }
 
+        // handle status
+        if(stockInsuffisant){
+            commande.setSous_total(sous_total);
+            commande.setTotal(0);
+            commande.setMontant_restant(0.0);
+            commande.setStatus(OrderStatus.REJECTED);
+
+            Commande commandeRejected = commandeRepository.save(commande);
+            return commandeMapper.toRequestDto(commandeRejected);
+        }
+
+        // normal order
         // set discount
+
         double discout = calculteDiscount(sous_total,client.getNiveau_fidelete());
         commande.setDiscount(discout);
-        System.out.print("Discount : " +  discout);
         // set total
+
         commande.setSous_total(sous_total);
         double total = sous_total - discout + dto.getTva() ;
+
         commande.setTotal(total);
         commande.setMontant_restant(total);
         commande.setStatus(OrderStatus.PENDING);
@@ -89,6 +103,7 @@ public class CommandeServiceImpl implements CommandeService{
 
         Commande savedCommande = commandeRepository.save(commande);
 
+        // calculer niveau fidelete
         int totalOrders = commandeRepository.countByClientIdAndStatus(client.getId() , OrderStatus.CONFIRMED);
         double totalSpent= commandeRepository.sumTotalByClientId(client.getId() ,OrderStatus.CONFIRMED);
         Niveau_fidelete newLvl = calculateNiveauFidelete(totalOrders,totalSpent);
