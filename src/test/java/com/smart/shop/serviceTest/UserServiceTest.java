@@ -107,4 +107,14 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void logoutSuccessfully(){
+
+       HttpSession SESSION =  Mockito.mock(HttpSession.class);
+
+        userService.logout(SESSION);
+
+        Mockito.verify(SESSION).invalidate();
+    }
+
 }
