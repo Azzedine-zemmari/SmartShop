@@ -25,12 +25,22 @@ public class StatistiqueServiceTest {
     public void totalCommandes(){
         Mockito.when(commandeRepository.countByUserIdAndStatus(1,OrderStatus.CONFIRMED)).thenReturn(13);
 
-        Integer result = commandeRepository.countByUserIdAndStatus(1, OrderStatus.CONFIRMED);
+        Integer result = statistique.totalCommandes(1);
 
         Mockito.verify(commandeRepository).countByUserIdAndStatus(1,OrderStatus.CONFIRMED);
         assertEquals(13,result);
     }
 
-    
+    @Test
+    public void TotalCumule(){
+        Mockito.when(commandeRepository.sumTotalByUserId(1,OrderStatus.CONFIRMED))
+                .thenReturn(12.345);
+
+        Double result = statistique.totalCumule(1);
+
+        Mockito.verify(commandeRepository).sumTotalByUserId(1,OrderStatus.CONFIRMED);
+        assertEquals(12.35,result);
+    }
+
 
 }
