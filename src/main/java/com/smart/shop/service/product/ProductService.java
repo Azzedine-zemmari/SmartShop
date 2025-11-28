@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
-    String createProduct(ProductDto productDto);
+    ProductDto createProduct(ProductDto productDto);
     String updateProduct(int id , ProductDto productDto );
     String deleteProduct(int id);
     Page<ProductDto> findAllProduct(Pageable pageable);

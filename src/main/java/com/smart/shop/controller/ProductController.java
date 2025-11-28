@@ -17,8 +17,8 @@ public class ProductController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<String> insertProduct(@RequestBody ProductDto productDto){
-        String product = productService.createProduct(productDto);
+    public ResponseEntity<ProductDto> insertProduct(@RequestBody ProductDto productDto){
+        ProductDto product = productService.createProduct(productDto);
         return ResponseEntity.ok(product);
     }
     @PutMapping("/update/{id}")

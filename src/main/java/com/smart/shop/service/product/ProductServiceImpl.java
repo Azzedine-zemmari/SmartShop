@@ -21,23 +21,15 @@ public class ProductServiceImpl  implements ProductService{
     }
 
     @Override
-    public String createProduct(ProductDto productDto) {
-        try{
-        Product product = new Product();
-        product.setNom(productDto.getNom());
-        product.setPrix_unitaire(productDto.getPrixUnitaire());
-        product.setStock_disponible(productDto.getStockDisponible());
+    public ProductDto createProduct(ProductDto productDto) {
+        Product product = productMapper.productDtoToProduct(productDto);
 
         Product productSaved = productRepository.save(product);
 
-        return "product created successfully";
-        }catch(IllegalArgumentException e){
-            return "Exception : " + e.getMessage();
-        }
+        return productMapper.productToProductDto(productSaved);
     }
     @Override
     public String updateProduct(int id , ProductDto productDto){
-        try{
             Product product = productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("produit not trouver"));
             if(productDto.getNom() != null){
                 product.setNom(productDto.getNom());
@@ -50,9 +42,6 @@ public class ProductServiceImpl  implements ProductService{
             }
             productRepository.save(product);
             return "product modifier avec success";
-        }catch(Exception e){
-            return "exception : " + e.getMessage();
-        }
     }
     @Override
     public String deleteProduct(int id){
