@@ -40,4 +40,5 @@ public interface CommandeRepository extends JpaRepository<Commande,Long> {
     @Query("SELECT c FROM Commande c WHERE c.client.user.id = :userId")
     List<CommandeSummaryProjection> findAllByUserId(@Param("userId") Integer userId);
 
+    boolean existsByCodePromo(String codePromo);
 }

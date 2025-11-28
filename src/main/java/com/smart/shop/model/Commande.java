@@ -49,9 +49,9 @@ public class Commande {
     private OrderStatus status;
 
 
-    @Column(unique = true)
+    @Column(name = "code_promo", unique = true)
     @Pattern(regexp = "PROMO-[A-Z0-9]{4}")
-    private String code_promo;
+    private String codePromo;
 
     @ToString.Include
     private Double montant_restant;

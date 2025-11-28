@@ -47,7 +47,6 @@ public class RoleFilter implements Filter {
             ((HttpServletResponse) response).setStatus(403);
             return;
         }
-//        // todo : update and delete only for admin to do
         if(path.matches("/api/v1/client/info/\\d+") || path.matches("/api/v1/client/update/\\d+") || path.matches("/api/v1/client/delete/\\d+")){
             String[] parts = path.split("/");
             Integer id = Integer.parseInt(parts[parts.length-1]);

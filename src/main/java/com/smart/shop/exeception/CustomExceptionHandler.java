@@ -57,5 +57,10 @@ public class CustomExceptionHandler {
         ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),422);
         return new ResponseEntity<>(apiErreur , HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    @ExceptionHandler(PromoCodeAlreadyUsedException.class)
+    public ResponseEntity<ApiErreur> PromoCodeAlreadyUsed(PromoCodeAlreadyUsedException e){
+        ApiErreur apiErreur = new ApiErreur(e.getMessage() , LocalDateTime.now(),400);
+        return new ResponseEntity<>(apiErreur , HttpStatus.BAD_REQUEST);
+    }
 
 }

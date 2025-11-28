@@ -10,6 +10,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -42,5 +46,18 @@ public class StatistiqueServiceTest {
         assertEquals(12.35,result);
     }
 
+    @Test
+    void firstAndLastDateCommande_success() {
+        LocalDateTime firstDate = LocalDateTime.of(2024, 1, 10, 12, 0);
+        LocalDateTime lastDate  = LocalDateTime.of(2024, 3, 20, 18, 30);
 
+        List<Object[]> mockResult = new ArrayList<>();
+        mockResult.add(new Object[]{firstDate, lastDate});
+
+        Mockito.when(commandeRepository.findFirstAndLastCommandeDateForUser(1)).thenReturn(mockResult);
+
+        String result = statistique.firstAndLastDateCommande(1);
+
+        assertEquals(firstDate + " : " + lastDate , result);
+    }
 }

@@ -5,9 +5,7 @@ import com.smart.shop.dto.CommandeSummaryProjection;
 import com.smart.shop.dto.OrderItemRequestDto;
 import com.smart.shop.enums.Niveau_fidelete;
 import com.smart.shop.enums.OrderStatus;
-import com.smart.shop.exeception.CannotCancelOrderException;
-import com.smart.shop.exeception.ProductNotFoundException;
-import com.smart.shop.exeception.UserNotFound;
+import com.smart.shop.exeception.*;
 import com.smart.shop.mapper.CommandeMapper;
 import com.smart.shop.model.Client;
 import com.smart.shop.model.Commande;
@@ -37,6 +35,14 @@ public class CommandeServiceImpl implements CommandeService{
     @Transactional
     public CommandeRequestDto createCommande(CommandeRequestDto dto){
         List<String> promoCodes = List.of("PROMO-AB12", "PROMO-X6GZ", "PROMO-CF2R");
+        if(!promoCodes.contains(dto.getCode_promo())){
+            throw new InvalidPromoCodeException("promoCode n est pas exsiste veuillez saisir un valide code");
+        }
+
+        if(commandeRepository.existsByCodePromo(dto.getCode_promo())){
+            throw new PromoCodeAlreadyUsedException("promoCode et deja utiliser");
+        }
+
 
         Commande commande = commandeMapper.toEntity(dto);
 
@@ -97,7 +103,7 @@ public class CommandeServiceImpl implements CommandeService{
         double remiseCode = 0.0;
         if(dto.getCode_promo() != null && promoCodes.contains(dto.getCode_promo())){
             remiseCode = round(sous_total * 0.05); // +5%
-            commande.setCode_promo(dto.getCode_promo());
+            commande.setCodePromo(dto.getCode_promo());
         }
 
         double remiseTotal = round(remiseFidelete + remiseCode);
