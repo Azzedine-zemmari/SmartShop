@@ -5,6 +5,7 @@ import com.smart.shop.dto.client.ClientDto;
 import com.smart.shop.enums.Niveau_fidelete;
 import com.smart.shop.enums.Role;
 import com.smart.shop.exeception.UserAlreadyExiste;
+import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.ClientMapper;
 import com.smart.shop.model.Client;
 import com.smart.shop.model.User;
@@ -86,6 +87,29 @@ public class ClientServiceTest {
         assertEquals(10,result.getId());
         assertEquals("azzedine",result.getNom());
         assertEquals("azzedine@gmail.com",result.getEmail());
+
+    }
+    @Test
+    public void consulterInftoShouldThrowsUserNotFound(){
+        Mockito.when(clientRepository.findById(2)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFound.class,()-> clientService.consulterInfoClient(2));
+    }
+    @Test
+    public void consulterInfoSuccess(){
+        Client client  = new Client();
+        client.setId(1);
+
+        Mockito.when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(1);
+
+        Mockito.when(clientMapper.clientToClientDto(client)).thenReturn(clientDto);
+
+        ClientDto result = clientService.consulterInfoClient(1);
+
+        assertEquals(1,result.getId());
 
     }
 }
