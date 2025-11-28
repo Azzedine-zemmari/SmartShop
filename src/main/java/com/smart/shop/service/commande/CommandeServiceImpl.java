@@ -35,12 +35,14 @@ public class CommandeServiceImpl implements CommandeService{
     @Transactional
     public CommandeRequestDto createCommande(CommandeRequestDto dto){
         List<String> promoCodes = List.of("PROMO-AB12", "PROMO-X6GZ", "PROMO-CF2R");
-        if(!promoCodes.contains(dto.getCode_promo())){
-            throw new InvalidPromoCodeException("promoCode n est pas exsiste veuillez saisir un valide code");
-        }
-
-        if(commandeRepository.existsByCodePromo(dto.getCode_promo())){
-            throw new PromoCodeAlreadyUsedException("promoCode et deja utiliser");
+        if(dto.getCode_promo() !=null){
+            if(!promoCodes.contains(dto.getCode_promo())){
+                throw new InvalidPromoCodeException("promoCode n est pas exsiste veuillez saisir un valide code");
+            }
+    
+            if(commandeRepository.existsByCodePromo(dto.getCode_promo())){
+                throw new PromoCodeAlreadyUsedException("promoCode et deja utiliser");
+            }
         }
 
 

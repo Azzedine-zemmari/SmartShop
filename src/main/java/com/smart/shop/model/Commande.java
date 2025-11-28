@@ -49,7 +49,7 @@ public class Commande {
     private OrderStatus status;
 
 
-    @Column(name = "code_promo", unique = true)
+    @Column(name = "code_promo", unique = true,nullable = true)
     @Pattern(regexp = "PROMO-[A-Z0-9]{4}")
     private String codePromo;
 

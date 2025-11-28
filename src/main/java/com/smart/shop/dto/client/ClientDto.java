@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class ClientDto {
     private int id;
-    @NotBlank(message="Veuillez saisir le nom ")
     private String nom;
     private Niveau_fidelete niveau_fidelete;
     private String username;
