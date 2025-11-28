@@ -39,17 +39,17 @@ public class ClientServiceTest {
     private ClientServiceImpl clientService;
 
     @Test
-    public void ShouldThrowUserAlreadyException(){
+    public void ShouldThrowUserAlreadyException() {
         UserRegisterDto userRegisterDto = new UserRegisterDto();
         userRegisterDto.setUsername("azzedine");
 
         Mockito.when(userRepository.findByUsername("azzedine")).thenReturn(Optional.of(new User()));
 
-        assertThrows(UserAlreadyExiste.class,()-> clientService.creeClient(userRegisterDto));
+        assertThrows(UserAlreadyExiste.class, () -> clientService.creeClient(userRegisterDto));
     }
 
     @Test
-    public void InsertClientSuccessfully(){
+    public void InsertClientSuccessfully() {
         UserRegisterDto userRegisterDto = new UserRegisterDto();
         userRegisterDto.setUsername("azzedine");
         userRegisterDto.setPassword("1234");
@@ -84,20 +84,22 @@ public class ClientServiceTest {
 
         ClientDto result = clientService.creeClient(userRegisterDto);
 
-        assertEquals(10,result.getId());
-        assertEquals("azzedine",result.getNom());
-        assertEquals("azzedine@gmail.com",result.getEmail());
+        assertEquals(10, result.getId());
+        assertEquals("azzedine", result.getNom());
+        assertEquals("azzedine@gmail.com", result.getEmail());
 
     }
+
     @Test
-    public void consulterInftoShouldThrowsUserNotFound(){
+    public void consulterInftoShouldThrowsUserNotFound() {
         Mockito.when(clientRepository.findById(2)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFound.class,()-> clientService.consulterInfoClient(2));
+        assertThrows(UserNotFound.class, () -> clientService.consulterInfoClient(2));
     }
+
     @Test
-    public void consulterInfoSuccess(){
-        Client client  = new Client();
+    public void consulterInfoSuccess() {
+        Client client = new Client();
         client.setId(1);
 
         Mockito.when(clientRepository.findById(1)).thenReturn(Optional.of(client));
@@ -109,20 +111,22 @@ public class ClientServiceTest {
 
         ClientDto result = clientService.consulterInfoClient(1);
 
-        assertEquals(1,result.getId());
+        assertEquals(1, result.getId());
 
     }
+
     @Test
-    public void updateClientInfoThrowsUserNotFoundException(){
+    public void updateClientInfoThrowsUserNotFoundException() {
         ClientDto clientDto = new ClientDto();
         clientDto.setId(1);
 
         Mockito.when(clientRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFound.class,()-> clientService.updateClientInfo(1,clientDto));
+        assertThrows(UserNotFound.class, () -> clientService.updateClientInfo(1, clientDto));
     }
+
     @Test
-    public void updateClientInfoSuccess(){
+    public void updateClientInfoSuccess() {
         User user = new User();
         user.setUsername("oldUser");
         user.setRole(Role.CLIENT);
@@ -146,12 +150,43 @@ public class ClientServiceTest {
 
         Mockito.when(clientMapper.clientToClientDto(Mockito.any(Client.class))).thenReturn(new ClientDto());
 
-        clientService.updateClientInfo(1,dto);
+        clientService.updateClientInfo(1, dto);
 
         Mockito.verify(clientRepository).save(client);
-        assertEquals("New Name",client.getNom());
-        assertEquals("new@gmail.com",client.getEmail());
+        assertEquals("New Name", client.getNom());
+        assertEquals("new@gmail.com", client.getEmail());
 
 
+    }
+
+    @Test
+    public void deleteClientThrowsUserNotFound() {
+        Mockito.when(clientRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFound.class, () -> clientService.deleteClient(1));
+    }
+
+    @Test
+    public void deleteClient() {
+        User user = new User();
+        user.setUsername("user");
+        user.setRole(Role.CLIENT);
+
+        Client client = new Client();
+        client.setId(1);
+        client.setNiveau_fidelete(Niveau_fidelete.BASIC);
+        client.setNom("name");
+        client.setEmail("name@gmail.com");
+        client.setUser(user);
+
+        Mockito.when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+
+        Mockito.doNothing().when(clientRepository).delete(client);
+
+
+        clientService.deleteClient(1);
+
+        Mockito.verify(clientRepository).findById(1);
+        Mockito.verify(clientRepository).delete(client);
     }
 }
