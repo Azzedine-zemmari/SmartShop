@@ -199,7 +199,7 @@ public class CommandeServiceImpl implements CommandeService{
         Commande commande = commandeRepository.findById(commandeId)
                 .orElseThrow(() -> new RuntimeException("Commande introuvable"));
 
-        if(commande.getOrderItems().equals(OrderStatus.CONFIRMED) || commande.getOrderItems().equals(OrderStatus.REJECTED)){
+        if(commande.getStatus() == OrderStatus.CONFIRMED || commande.getStatus() == OrderStatus.REJECTED){
             throw new CannotCancelOrderException("Vous ne pouvez pas annuler une commande déjà confirmée ou rejeter");
         }
 

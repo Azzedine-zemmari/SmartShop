@@ -4,6 +4,7 @@ import com.smart.shop.dto.CommandeRequestDto;
 import com.smart.shop.dto.OrderItemRequestDto;
 import com.smart.shop.enums.Niveau_fidelete;
 import com.smart.shop.enums.OrderStatus;
+import com.smart.shop.exeception.CannotCancelOrderException;
 import com.smart.shop.exeception.ProductNotFoundException;
 import com.smart.shop.exeception.UserNotFound;
 import com.smart.shop.mapper.CommandeMapper;
@@ -26,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -159,4 +161,92 @@ public class CommandeServiceTest {
 
         Mockito.verify(commandeRepository).save(Mockito.any());
     }
+    @Test
+    void confirmeCommande_shouldThrowIfCommandeNotFound() {
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> commandeService.ConfirmeCommande(1L));
+    }
+
+    @Test
+    void confirmeCommande_shouldThrowIfMontantRestantIsNull() {
+        Commande commande = new Commande();
+        commande.setId(1L);
+        commande.setMontant_restant(null);
+
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.of(commande));
+
+        assertThrows(RuntimeException.class, () -> commandeService.ConfirmeCommande(1L));
+    }
+
+    @Test
+    void confirmeCommande_shouldThrowIfMontantRestantNotPaid() {
+        Commande commande = new Commande();
+        commande.setId(1L);
+        commande.setMontant_restant(100.0);
+
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.of(commande));
+
+        assertThrows(RuntimeException.class, () -> commandeService.ConfirmeCommande(1L));
+    }
+
+
+    @Test
+    void confirmeCommande_shouldUpdateStockAndStatus() {
+        // Arrange
+        Commande commande = new Commande();
+        commande.setId(1L);
+        commande.setMontant_restant(0.0);
+
+        Product product = new Product();
+        product.setId(10);
+        product.setStock_disponible(50);
+
+        OrderItem item = new OrderItem();
+        item.setProduct(product);
+        item.setQuantity(5);
+
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.of(commande));
+        Mockito.when(orderItemsRepository.findByCommandeId(1L))
+                .thenReturn(List.of(item));
+
+        commandeService.ConfirmeCommande(1L);
+
+        Mockito.verify(productRepository).updateStockDisponible(45, 10);
+        Mockito.verify(commandeRepository).updateStatus(1L, OrderStatus.CONFIRMED);
+    }
+
+    @Test
+    void cancelCommande_shouldThrowIfCommandeNotFound() {
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> commandeService.CancelCommande(1L));
+    }
+
+    @Test
+    void cancelCommande_shouldThrowIfCommandeConfirmedOrRejected() {
+        Commande commande = new Commande();
+        commande.setId(1L);
+        commande.setStatus(OrderStatus.CONFIRMED);
+
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.of(commande));
+
+        assertThrows(CannotCancelOrderException.class, () -> commandeService.CancelCommande(1L));
+    }
+
+    @Test
+    void cancelCommande_shouldUpdateOrerStatusToCanceled() {
+        Commande commande = new Commande();
+        commande.setId(1L);
+        commande.setStatus(OrderStatus.PENDING);
+
+        Mockito.when(commandeRepository.findById(1L)).thenReturn(Optional.of(commande));
+
+        commandeService.CancelCommande(1L);
+
+        Mockito.verify(commandeRepository).updateStatus(1L,OrderStatus.CANCELED);
+    }
+    
+
+
 }
