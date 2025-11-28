@@ -112,4 +112,46 @@ public class ClientServiceTest {
         assertEquals(1,result.getId());
 
     }
+    @Test
+    public void updateClientInfoThrowsUserNotFoundException(){
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(1);
+
+        Mockito.when(clientRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFound.class,()-> clientService.updateClientInfo(1,clientDto));
+    }
+    @Test
+    public void updateClientInfoSuccess(){
+        User user = new User();
+        user.setUsername("oldUser");
+        user.setRole(Role.CLIENT);
+
+        Client client = new Client();
+        client.setId(1);
+        client.setNiveau_fidelete(Niveau_fidelete.BASIC);
+        client.setNom("oldNom");
+        client.setEmail("old@gmail.com");
+        client.setUser(user);
+
+
+        Mockito.when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+
+        ClientDto dto = new ClientDto();
+        dto.setNom("New Name");
+        dto.setEmail("new@gmail.com");
+        dto.setNiveau_fidelete(Niveau_fidelete.SILVER);
+        dto.setUsername("newUser");
+        dto.setRole(Role.CLIENT);
+
+        Mockito.when(clientMapper.clientToClientDto(Mockito.any(Client.class))).thenReturn(new ClientDto());
+
+        clientService.updateClientInfo(1,dto);
+
+        Mockito.verify(clientRepository).save(client);
+        assertEquals("New Name",client.getNom());
+        assertEquals("new@gmail.com",client.getEmail());
+
+
+    }
 }
