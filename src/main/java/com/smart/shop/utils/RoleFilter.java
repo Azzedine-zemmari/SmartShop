@@ -1,15 +1,21 @@
 package com.smart.shop.utils;
 
-import com.smart.shop.enums.Role;
-import com.smart.shop.model.User;
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
-import java.io.IOException;
+import com.smart.shop.enums.Role;
+import com.smart.shop.model.User;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class RoleFilter implements Filter {
@@ -27,10 +33,14 @@ public class RoleFilter implements Filter {
 
         String path = req.getRequestURI();
 
-        if(path.contains("/login") || path.contains("/register")){
-            chain.doFilter(request,response);
-            return;
-        }
+        if (path.contains("/login") 
+    || path.contains("/register") 
+    || path.startsWith("/swagger-ui") 
+    || path.startsWith("/v3/api-docs")) {
+    chain.doFilter(request, response);
+    return;
+}
+
 
         if(session == null || session.getAttribute("USER") == null){
             response.setContentType("application/json");

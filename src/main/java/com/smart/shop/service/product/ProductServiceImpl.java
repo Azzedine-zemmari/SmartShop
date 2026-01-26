@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl  implements ProductService{
@@ -54,6 +56,20 @@ public class ProductServiceImpl  implements ProductService{
     public Page<ProductDto> findAllProduct(Pageable pageable){
         return productRepository.findByDeletedAtIsNull(pageable)
                 .map(productMapper::productToProductDto);
+    }
+
+    public List<ProductDto> test(){
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> result = products.stream()
+                .filter(p->p.getStock_disponible() >= 50)
+                .sorted(Comparator.comparing(Product::getPrix_unitaire).reversed())
+                .map(m->{
+                    m.setPrix_unitaire(m.getPrix_unitaire() * 1.1);
+                    return productMapper.productToProductDto(m);
+                })
+                .toList();
+        return result;
+
     }
 
 }
