@@ -26,23 +26,35 @@ public class RoleFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)  throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
         HttpSession session = req.getSession(false);
 
         String path = req.getRequestURI();
 
-        if (path.contains("/login") 
-    || path.contains("/register") 
-    || path.startsWith("/swagger-ui") 
-    || path.startsWith("/v3/api-docs")) {
-    chain.doFilter(request, response);
-    return;
-}
+        if (path.contains("/login")
+                || path.contains("/register")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+            || path.contains("/api/v1/client/creeClient")) {
+            chain.doFilter(request, response);
+            return;
 
+        }
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
-        if(session == null || session.getAttribute("USER") == null){
+        if (session == null || session.getAttribute("USER") == null) {
             response.setContentType("application/json");
             response.getWriter().write("error : non authentifie");
             ((HttpServletResponse) response).setStatus(401);
@@ -51,24 +63,26 @@ public class RoleFilter implements Filter {
 
         User user = (User) session.getAttribute("USER");
 
-        if((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete")) && user.getRole() != Role.ADMIN){
+        if ((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete"))
+                && user.getRole() != Role.ADMIN) {
             response.setContentType("application/json");
             response.getWriter().write("error :  acces refuse");
             ((HttpServletResponse) response).setStatus(403);
             return;
         }
-        if(path.matches("/api/v1/client/info/\\d+") || path.matches("/api/v1/client/update/\\d+") || path.matches("/api/v1/client/delete/\\d+")){
+        if (path.matches("/api/v1/client/info/\\d+") || path.matches("/api/v1/client/update/\\d+")
+                || path.matches("/api/v1/client/delete/\\d+")) {
             String[] parts = path.split("/");
-            Integer id = Integer.parseInt(parts[parts.length-1]);
+            Integer id = Integer.parseInt(parts[parts.length - 1]);
 
-            if(user.getRole() != Role.ADMIN && (user.getClient() == null || user.getClient().getId() != id)){
+            if (user.getRole() != Role.ADMIN && (user.getClient() == null || user.getClient().getId() != id)) {
                 response.setContentType("application/json");
                 response.getWriter().write("error :  acces refuse");
                 ((HttpServletResponse) response).setStatus(403);
                 return;
             }
         }
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
 
     }
 }
