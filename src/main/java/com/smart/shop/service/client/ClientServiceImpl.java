@@ -15,6 +15,7 @@ import com.smart.shop.repository.UserRepository;
 import com.smart.shop.utils.PasswordUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,8 +90,18 @@ public class ClientServiceImpl implements ClientServiceInterface{
 
         return updateDto;
     }
+    @Override
     public void deleteClient(int id){
         Client client = clientRepository.findById(id).orElseThrow(()-> new UserNotFound("utilisateur n est pas trouve"));
         clientRepository.delete(client);
+    }
+    
+    @Override
+    public List<ClientDto> showAllClient(){
+        List<Client> clients = clientRepository.findAll();
+        List<ClientDto> clientDtos = clients.stream()
+        .map(c-> clientMapper.clientToClientDto(c))
+        .toList();
+        return clientDtos;
     }
 }
