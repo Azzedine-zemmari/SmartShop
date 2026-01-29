@@ -63,7 +63,7 @@ public class RoleFilter implements Filter {
 
         User user = (User) session.getAttribute("USER");
 
-        if ((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete"))
+        if ((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete") || path.contains("/api/v1/client/clients"))
                 && user.getRole() != Role.ADMIN) {
             response.setContentType("application/json");
             response.getWriter().write("error :  acces refuse");

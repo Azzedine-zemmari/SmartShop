@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.List;
 
 public interface ClientRepository extends JpaRepository<Client,Integer> {
     @Modifying
     @Query("UPDATE Client c set c.niveau_fidelete = :niveau where c.id = :clientId")
     void updateNiveauFidelete(@Param("clientId") Integer clientId , @Param("niveau")Niveau_fidelete niveau);
+    @Query("SELECT c FROM Client JOIN c.user u WHERE u.role <> 'ADMIN' ")
+    List<Client> findAllClientsExceptAdmin();
 }

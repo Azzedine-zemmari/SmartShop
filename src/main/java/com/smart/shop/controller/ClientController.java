@@ -4,6 +4,9 @@ import com.smart.shop.dto.UserRegisterDto;
 import com.smart.shop.dto.client.ClientDto;
 import com.smart.shop.model.Client;
 import com.smart.shop.service.client.ClientServiceInterface;
+
+import java.util.List;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +37,10 @@ public class ClientController {
     public ResponseEntity<String> updateClientInfo(@PathVariable("id") int id){
         clientService.deleteClient(id);
         return ResponseEntity.ok("client supprimer avec success");
+    }
+    @GetMapping("/clients")
+    public ResponseEntity<List<ClientDto>> showAllClients(){
+        List<ClientDto> clients = clientService.showAllClient();
+        return ResponseEntity.ok(clients);
     }
 }

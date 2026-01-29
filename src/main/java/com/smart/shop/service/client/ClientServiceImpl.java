@@ -98,7 +98,7 @@ public class ClientServiceImpl implements ClientServiceInterface{
     
     @Override
     public List<ClientDto> showAllClient(){
-        List<Client> clients = clientRepository.findAll();
+        List<Client> clients = clientRepository.findAllClientsExceptAdmin();
         List<ClientDto> clientDtos = clients.stream()
         .map(c-> clientMapper.clientToClientDto(c))
         .toList();
