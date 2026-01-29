@@ -5,7 +5,6 @@ function App() {
 
   return (
     <>
-       <h2>Create Client</h2>
       <ClientForm />
     </>
   )
