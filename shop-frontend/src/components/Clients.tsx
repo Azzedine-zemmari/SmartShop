@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getClients } from "../ClientApi";
+import { getClients } from "../api/ClientApi";
 
 const Clients = () => {
     const [clients , setClients] = useState([]);
