@@ -9,6 +9,6 @@ export const creeClient = (data: any) => {
 };
 
 export const getClients = () => {
-    return axios.get(`${API_URL}/api/v1/client/clients`)
+    return axios.get(`${API_URL}/api/v1/client/clients`, { withCredentials: true })
     .then(res => res.data);
 }
