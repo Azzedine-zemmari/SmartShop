@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
-import { getClients, getClientInfo, deleteClient } from "../api/ClientApi";
+import { getClients, getClientInfo, deleteClient, updateClient } from "../api/ClientApi";
 
 const Clients = () => {
     const [clients, setClients] = useState<any[]>([]);
     const [selectedClient, setSelectedClient] = useState<any | null>(null);
+    const [editingClient, setEditingClient] = useState<any | null>(null);
+    const [formData, setFormData] = useState<any>({
+        nom: "",
+        username: "",
+        email: "",
+        role: "",
+        niveau_fidelete: ""
+    });
 
-    useEffect(() => {
-        fetchClients();
-    }, []);
 
     const fetchClients = async () => {
         try {
@@ -17,6 +22,11 @@ const Clients = () => {
             console.error(error);
         }
     };
+    
+    useEffect(() => {
+        fetchClients();
+    }, []);
+
 
     const handleShowInfo = async (id: number) => {
         try {
@@ -41,6 +51,37 @@ const Clients = () => {
             console.error("Error deleting client:", error);
             alert("Failed to delete client.");
         }
+    };
+    const handleEdit = (client: any) => {
+        setEditingClient(client);
+        setFormData({
+            nom: client.nom,
+            username: client.username,
+            email: client.email,
+            role: client.role,
+            niveau_fidelete: client.niveau_fidelete
+        });
+    };
+    const handleUpdate = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const updatedClient = await updateClient(editingClient.id, formData);
+
+            setClients((prev) =>
+                prev.map((c) =>
+                    c.id === updatedClient.id ? updatedClient : c
+                )
+            );
+
+            setEditingClient(null);
+            alert("Client updated successfully!");
+        } catch (error) {
+            console.error("Update failed:", error);
+            alert("Failed to update client");
+        }
+
+
     };
 
     return (
@@ -72,12 +113,16 @@ const Clients = () => {
                                 <td style={tdStyle}>{client.role}</td>
                                 <td style={tdStyle}>{client.niveau_fidelete}</td>
                                 <td style={tdStyle}>
-                                    <button onClick={() => handleShowInfo(client.id)} style={{ marginRight: "8px" }}>
-                                        View Info
+                                    <button onClick={() => handleEdit(client)} style={{ marginRight: "6px" }}>
+                                        Edit
+                                    </button>
+                                    <button onClick={() => handleShowInfo(client.id)} style={{ marginRight: "6px" }}>
+                                        View
                                     </button>
                                     <button onClick={() => handleDelete(client.id)} style={{ color: "red" }}>
                                         Delete
                                     </button>
+
                                 </td>
                             </tr>
                         ))}
@@ -97,6 +142,57 @@ const Clients = () => {
                     <button onClick={() => setSelectedClient(null)}>Close</button>
                 </div>
             )}
+            {editingClient && (
+                <form onSubmit={handleUpdate} style={{ marginTop: "30px", border: "1px solid #ccc", padding: "20px" }}>
+                    <h2>Edit Client</h2>
+
+                    <input
+                        placeholder="Nom"
+                        value={formData.nom}
+                        onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                    />
+
+                    <input
+                        placeholder="Username"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    />
+
+                    <input
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+
+                    <select
+                        value={formData.role}
+                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    >
+                        <option value="">Select Role</option>
+                        <option value="CLIENT">CLIENT</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+
+                    <select
+                        value={formData.niveau_fidelete}
+                        onChange={(e) => setFormData({ ...formData, niveau_fidelete: e.target.value })}
+                    >
+                        <option value="">Fidelity Level</option>
+                        <option value="BASIC">BASIC</option>
+                        <option value="SILVER">SILVER</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="PLATINUM">PLATINUM</option>
+                    </select>
+
+                    <div style={{ marginTop: "10px" }}>
+                        <button type="submit">Save</button>
+                        <button type="button" onClick={() => setEditingClient(null)} style={{ marginLeft: "10px" }}>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            )}
+
         </div>
     );
 };

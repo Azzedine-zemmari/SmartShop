@@ -24,3 +24,10 @@ export const deleteClient = (id: number) => {
     });
 };
 
+export const updateClient = (id: number, client: any) => {
+  return axios.put(
+    `${API_URL}/api/v1/client/update/${id}`,
+    client,
+    { withCredentials: true }
+  ).then(res => res.data);
+};
