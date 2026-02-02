@@ -36,24 +36,25 @@ public class RoleFilter implements Filter {
 
         String path = req.getRequestURI();
 
-        if (path.contains("/login")
-                || path.contains("/register")
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")
-            || path.contains("/api/v1/client/creeClient")) {
-            chain.doFilter(request, response);
-            return;
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
 
-        }
         if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
+        if (path.contains("/login")
+                || path.contains("/register")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.contains("/api/v1/client/creeClient")) {
+            chain.doFilter(request, response);
+            return;
+        }
+        
         if (session == null || session.getAttribute("USER") == null) {
             response.setContentType("application/json");
             response.getWriter().write("error : non authentifie");
@@ -63,7 +64,8 @@ public class RoleFilter implements Filter {
 
         User user = (User) session.getAttribute("USER");
 
-        if ((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete") || path.contains("/api/v1/client/clients"))
+        if ((path.contains("/admin") || path.contains("/product") || path.contains("/api/v1/product/delete")
+                || path.contains("/api/v1/client/clients"))
                 && user.getRole() != Role.ADMIN) {
             response.setContentType("application/json");
             response.getWriter().write("error :  acces refuse");
