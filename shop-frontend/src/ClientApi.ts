@@ -7,3 +7,8 @@ export const creeClient = (data: any) => {
     .post(`${API_URL}/api/v1/client/creeClient`, data)
     .then(res => res.data);
 };
+
+export const getClients = () => {
+    return axios.get(`${API_URL}/api/v1/client/clients`)
+    .then(res => res.data);
+}
