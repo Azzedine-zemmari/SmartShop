@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { getClients } from "../api/ClientApi";
+import { getClients, getClientInfo } from "../api/ClientApi";
 
 const Clients = () => {
     const [clients, setClients] = useState<any[]>([]);
+    const [selectedClient, setSelectedClient] = useState<any | null>(null);
 
     useEffect(() => {
         const fetchClient = async () => {
@@ -16,8 +17,17 @@ const Clients = () => {
         fetchClient();
     }, []);
 
+    const handleShowInfo = async (id: number) => {
+        try {
+            const data = await getClientInfo(id);
+            setSelectedClient(data);
+        } catch (error) {
+            console.error("Error fetching client info:", error);
+        }
+    };
+
     return (
-        <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
+        <div style={{ maxWidth: "900px", margin: "auto", padding: "20px" }}>
             <h1>Clients</h1>
 
             {clients.length === 0 ? (
@@ -32,6 +42,7 @@ const Clients = () => {
                             <th style={thStyle}>Email</th>
                             <th style={thStyle}>Role</th>
                             <th style={thStyle}>Fidelity Level</th>
+                            <th style={thStyle}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,29 +54,50 @@ const Clients = () => {
                                 <td style={tdStyle}>{client.email}</td>
                                 <td style={tdStyle}>{client.role}</td>
                                 <td style={tdStyle}>{client.niveau_fidelete}</td>
+                                <td style={tdStyle}>
+                                    <button onClick={() => handleShowInfo(client.id)}>
+                                        View Info
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             )}
+
+            {/* Selected Client Info */}
+            {selectedClient && (
+                <div style={{ marginTop: "30px", padding: "20px", border: "1px solid #ccc" }}>
+                    <h2>Client Info</h2>
+                    <p><strong>ID:</strong> {selectedClient.id}</p>
+                    <p><strong>Nom:</strong> {selectedClient.nom}</p>
+                    <p><strong>Username:</strong> {selectedClient.username}</p>
+                    <p><strong>Email:</strong> {selectedClient.email}</p>
+                    <p><strong>Role:</strong> {selectedClient.role}</p>
+                    <p><strong>Fidelity Level:</strong> {selectedClient.niveau_fidelete}</p>
+                    {/* Add any other fields from ClientDto */}
+                    <button onClick={() => setSelectedClient(null)}>Close</button>
+                </div>
+            )}
         </div>
     );
 };
 
+// Optional inline styles
 const thStyle: React.CSSProperties = {
     border: "1px solid #ccc",
     padding: "8px",
     backgroundColor: "#f5f5f5",
-    textAlign: "left"
+    textAlign: "left",
 };
 
 const tdStyle: React.CSSProperties = {
     border: "1px solid #ccc",
-    padding: "8px"
+    padding: "8px",
 };
 
 const trStyle: React.CSSProperties = {
-    borderBottom: "1px solid #eee"
+    borderBottom: "1px solid #eee",
 };
 
 export default Clients;
