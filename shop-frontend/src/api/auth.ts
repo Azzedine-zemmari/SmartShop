@@ -34,7 +34,7 @@ export const login = async (
 };
 
 export const logout = async() => {
-    const response = await fetch("http://localhost:8080/api/v1/user/logout",{
+    await fetch("http://localhost:8080/api/v1/user/logout",{
         method: "POST",
         credentials: "include",
     })

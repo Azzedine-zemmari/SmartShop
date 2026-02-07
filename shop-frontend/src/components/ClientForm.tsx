@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { creeClient } from "../api/ClientApi";
 
 
@@ -6,19 +6,19 @@ const ClientForm = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("CLIENT");
+    const [role] = useState("CLIENT");
     const [nom, setNom] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [success, setSuccess] = useState(false);
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setSuccess(false);
         try {
-            const client = await creeClient({ username, email, password, role, nom });
+            await creeClient({ username, email, password, role, nom });
             setSuccess(true);
             // Reset form
             setUsername("");
