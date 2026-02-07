@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { creeClient } from "../api/ClientApi";
 
+
 const ClientForm = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ const ClientForm = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [success, setSuccess] = useState(false);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,7 +33,6 @@ const ClientForm = () => {
             setLoading(false);
         }
     };
-
     return (
         <div className="bg-gray-50 p-6 min-h-screen">
             <div className="max-w-3xl mx-auto">

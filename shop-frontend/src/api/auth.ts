@@ -26,5 +26,17 @@ export const login = async (
         throw new Error(error);
     }
 
-    return response.json();
+    const user: UserDto = await response.json();
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    return user;
 };
+
+export const logout = async() => {
+    const response = await fetch("http://localhost:8080/api/v1/user/logout",{
+        method: "POST",
+        credentials: "include",
+    })
+}
+
