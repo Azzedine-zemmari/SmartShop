@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080"
+const API_URL = "http://localhost:7001"
 
 export const creeClient = (data: any) => {
     return axios

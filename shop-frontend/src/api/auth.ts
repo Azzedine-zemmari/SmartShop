@@ -12,7 +12,7 @@ export interface UserDto {
 export const login = async (
     data: LoginRequest
 ): Promise<UserDto> => {
-    const response = await fetch("http://localhost:8080/api/v1/user/login", {
+    const response = await fetch("http://localhost:7001/api/v1/user/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const login = async (
 };
 
 export const logout = async() => {
-    await fetch("http://localhost:8080/api/v1/user/logout",{
+    await fetch("http://localhost:7001/api/v1/user/logout",{
         method: "POST",
         credentials: "include",
     })

@@ -1,0 +1,44 @@
+  services:
+    shop-frontend:
+      build: ./shop-frontend
+      container_name: shop-frontend
+      ports:
+        - "4200:80"
+      networks:
+        - shop_net
+    shop-backend:
+#      image: azzedine122/securise-app:latest
+      build: .
+      container_name: shop-backend
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql-smart:3306/smart_shop
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: root
+        LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+      ports:
+        - "7001:8080"
+      depends_on:
+        - mysql-smart
+      networks: 
+        - shop_net
+
+    mysql-smart:
+      image: mysql:8
+      container_name: mysql-smart
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: smart_shop
+      ports:
+        - "3307:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+      networks:
+        - shop_net
+
+  networks:
+    shop_net:
+      driver: bridge
+
+
+  volumes:
+    mysql_data:

@@ -8,11 +8,16 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 2️⃣ Production stage
-FROM nginx:alpine
+# Production stage - use a lightweight Node static server instead of nginx
+FROM node:20-alpine AS production
 
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+
+# Install a simple static server to serve the built SPA
+RUN npm install -g serve@14.1.2 --silent
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Serve the SPA and let it handle client-side routes
+CMD ["serve", "-s", "dist", "-l", "80"]
